@@ -1,9 +1,12 @@
 """Async Sophos Firewall XML API Client."""
 
+import logging
 import os
 from typing import Any, Dict, List, Optional, Union, cast
 import httpx
 import xmltodict
+
+logger = logging.getLogger(__name__)
 
 
 class SophosAPIError(Exception):
@@ -42,14 +45,14 @@ class SophosFirewallClient:
         """Initialize Sophos Firewall XML API client.
 
         Args:
-            host: Firewall IP or domain. Defaults to SOPHOS_HOST env var or 192.168.1.1.
+            host: Firewall IP or domain. Defaults to SOPHOS_HOST env var or 172.16.16.16.
             port: API Web Console port. Defaults to SOPHOS_PORT env var or 4444.
             username: Admin username. Defaults to SOPHOS_USERNAME env var or admin.
             password: Admin password. Defaults to SOPHOS_PASSWORD env var.
             verify_ssl: Validate SSL certs. Defaults to SOPHOS_VERIFY_SSL env var or False.
             timeout: Request timeout in seconds. Default is 30.0.
         """
-        self.host = host or os.environ.get("SOPHOS_HOST", "192.168.1.1")
+        self.host = host or os.environ.get("SOPHOS_HOST", "172.16.16.16")
         self.port = port or int(os.environ.get("SOPHOS_PORT", "4444"))
         self.username = username or os.environ.get("SOPHOS_USERNAME", "admin")
         self.password = password or os.environ.get("SOPHOS_PASSWORD", "")
@@ -59,6 +62,12 @@ class SophosFirewallClient:
             self.verify_ssl = v_env in ("1", "true", "yes")
         else:
             self.verify_ssl = verify_ssl
+
+        if not self.verify_ssl:
+            logger.warning(
+                "SSL certificate verification is disabled (verify_ssl=False). "
+                "HTTPS requests to Sophos Firewall appliance will not validate TLS certificates."
+            )
 
         self.timeout = timeout
         self.endpoint_url = f"https://{self.host}:{self.port}/webconsole/APIController"
@@ -140,9 +149,14 @@ class SophosFirewallClient:
         if isinstance(status_info, dict):
             code = status_info.get("@code", "200")
             msg = status_info.get("#text", "")
-            if code not in ("200", "500") and "successfully" not in msg.lower():
-                # Note: Some SFOS MR versions use 200/500 code variants; inspect text
-                pass
+            if (
+                code not in ("200", "500")
+                and "successfully" not in msg.lower()
+                and "no record" not in msg.lower()
+            ):
+                raise SophosResponseError(code=code, message=msg)
+
+        return cast(Dict[str, Any], resp_data)
 
         return cast(Dict[str, Any], resp_data)
 

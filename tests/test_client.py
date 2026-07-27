@@ -6,6 +6,7 @@ from httpx import Response
 from sophos_firewall_mcp.client import (
     SophosAuthenticationError,
     SophosFirewallClient,
+    SophosResponseError,
 )
 from tests.conftest import (
     MOCK_FAILED_LOGIN_XML,
@@ -28,6 +29,12 @@ def test_client_init_defaults(monkeypatch):
     assert client.password == "pass123"
     assert client.verify_ssl is True
     assert client.endpoint_url == "https://10.0.0.1:8443/webconsole/APIController"
+
+
+def test_client_fallback_defaults():
+    client = SophosFirewallClient()
+    assert client.host == "172.16.16.16"
+    assert client.port == 4444
 
 
 def test_build_xml_request():
@@ -62,6 +69,20 @@ async def test_send_request_auth_failure():
     )
 
     with pytest.raises(SophosAuthenticationError):
+        await client.send_request("Get", "SystemInformation")
+    await client.close()
+
+
+@pytest.mark.asyncio
+@respx.mock
+async def test_send_request_response_error():
+    client = SophosFirewallClient(host="192.168.1.1", port=4444)
+    err_xml = '<Response><Status code="501">Operation failed.</Status></Response>'
+    respx.post("https://192.168.1.1:4444/webconsole/APIController").mock(
+        return_value=Response(200, text=err_xml)
+    )
+
+    with pytest.raises(SophosResponseError):
         await client.send_request("Get", "SystemInformation")
     await client.close()
 
