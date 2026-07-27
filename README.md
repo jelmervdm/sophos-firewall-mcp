@@ -48,6 +48,22 @@ TDQS Quality Tier              : Tier A+
 
 ---
 
+## ⚙️ Sophos Firewall API Prerequisites
+
+Before connecting `sophos-firewall-mcp` to your Sophos Firewall (SFOS) appliance, ensure the XML API is enabled and your client IP is whitelisted:
+
+1. **Log in to Web Admin Console**: Open `https://<SOPHOS_HOST>:4444` in your browser.
+2. **Enable API Access**:
+   - Navigate to **System** > **Administration** > **API Access** (or **API Configuration**).
+   - Check the **API Configuration** toggle/checkbox to enable the API service.
+3. **Whitelist Client IP Address**:
+   - Under **Allowed IP Addresses**, click **Add** and specify the IP address of the machine or container host running `sophos-firewall-mcp`.
+   - *Note*: Sophos Firewall rejects API requests from any IP address not explicitly added to this whitelist.
+4. **Administrator Account**:
+   - Ensure the configured user account (`SOPHOS_USERNAME`) has active administrator privileges.
+
+---
+
 ## 🔧 Environment Variables
 
 | Variable | Description | Default |
