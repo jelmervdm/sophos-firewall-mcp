@@ -1,0 +1,82 @@
+[project]
+name = "sophos-firewall-mcp-server"
+version = "0.1.0"
+description = "MCP server for Sophos Firewall (SFOS) network security & infrastructure management"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.11"
+authors = [
+    {name = "Jelmer van der Mul"},
+]
+keywords = ["sophos", "firewall", "sfos", "mcp", "model-context-protocol", "security", "network"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Networking :: Firewalls",
+]
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "httpx>=0.20.0",
+    "xmltodict>=0.13.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+router = [
+    "fastembed>=0.4.0",
+    "numpy>=1.26.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/jelmervdm/sophos-firewall-mcp"
+Repository = "https://github.com/jelmervdm/sophos-firewall-mcp"
+Issues = "https://github.com/jelmervdm/sophos-firewall-mcp/issues"
+
+[project.scripts]
+sophos-firewall-mcp-server = "sophos_firewall_mcp.server:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["sophos_firewall_mcp*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["src"]
+testpaths = ["tests"]
+filterwarnings = [
+    "ignore::pytest.PytestAssertRewriteWarning"
+]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_ignores = false
+warn_return_any = true
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+tag_format = "v{version}"
+
+[tool.semantic_release.branches.main]
+match = "main"
+
+[tool.semantic_release.remote]
+type = "github"
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
