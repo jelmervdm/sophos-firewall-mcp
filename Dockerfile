@@ -11,7 +11,7 @@ COPY pyproject.toml requirements.txt README.md ./
 COPY src/ ./src
 
 # Install package dependencies
-RUN pip install --no-cache-dir .
+RUN pip install --no-cache-dir ".[router]"
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

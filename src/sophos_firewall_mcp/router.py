@@ -71,5 +71,14 @@ def get_router() -> Optional[ToolRouter]:
     if not enabled:
         return None
 
-    _router = ToolRouter()
-    return _router
+    try:
+        _router = ToolRouter()
+        return _router
+    except (ImportError, ModuleNotFoundError) as exc:
+        logger.warning(
+            "Tool routing is enabled (USE_ROUTER=true), but required optional dependencies "
+            "are missing (%s). Install with `pip install sophos-firewall-mcp-server[router]` "
+            "or `pip install fastembed numpy`. Disabling tool router.",
+            exc,
+        )
+        return None

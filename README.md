@@ -183,6 +183,14 @@ When enabled:
 2. `route_tools` uses local CPU embeddings (`fastembed` with `BAAI/bge-small-en-v1.5`) to search for matching firewall tools in 5-10ms.
 3. `call_routed_tool` dynamically invokes the matching tool with parameters.
 
+> **Note on Router Dependencies**: Semantic routing requires optional dependencies (`fastembed` and `numpy`).
+> - **Container (Docker/Podman)**: Included automatically in official images (`ghcr.io/jelmervdm/sophos-firewall-mcp:latest`).
+> - **Local Python (`pip`)**: Install with extras: `pip install -e ".[router]"` or `pip install "sophos-firewall-mcp-server[router]"`.
+> - **`uv` Workspace**: Run `uv sync --extra router`.
+> - **`uvx` directly from Git**: Pass `--with "fastembed>=0.4.0" --with "numpy>=1.26.0"`.
+> If `USE_ROUTER=true` is set without installing `fastembed`, the server will log a warning and gracefully fall back to standard tool mode instead of failing initialization.
+
+
 ---
 
 ## 🧪 Testing & Quality Assurance
