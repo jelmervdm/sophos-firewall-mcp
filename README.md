@@ -3,7 +3,7 @@
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue.svg)](https://github.com/jelmervdm/sophos-firewall-mcp)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue.svg)](pyproject.toml)
-[![TDQS Score](https://img.shields.io/badge/TDQS-5.00%2F5.00%20(Tier%20A%2B)-success.svg)](#-tool-definition-quality-score-tdqs)
+[![TDQS Score](https://img.shields.io/badge/TDQS-5.00%2F5.00%20(Tier%20A%2B)-success.svg)](https://github.com/glama-ai/tool-definition-quality-score)
 
 An asynchronous [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for Sophos Firewall (SFOS), enabling AI assistants (such as Antigravity IDE, Claude Desktop, VS Code, and Cursor) to manage, audit, and troubleshoot Sophos Firewall network security infrastructure.
 
@@ -29,7 +29,7 @@ An asynchronous [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
 
 ## 🏆 Tool Definition Quality Score (TDQS)
 
-This server is audited against the **TDQS (Tool Definition Quality Score)** framework to guarantee optimal function calling, type safety, and runtime safety for LLMs.
+This server is audited against the **[Tool Definition Quality Score (TDQS)](https://github.com/glama-ai/tool-definition-quality-score)** framework to guarantee optimal function calling, type safety, and runtime safety for LLMs.
 
 ```text
 ================ TDQS EVALUATION REPORT ================
@@ -88,7 +88,7 @@ Podman is fully supported as a rootless drop-in replacement for Docker on Fedora
         "ghcr.io/jelmervdm/sophos-firewall-mcp:latest"
       ],
       "env": {
-        "SOPHOS_HOST": "192.168.1.1",
+        "SOPHOS_HOST": "172.16.16.16",
         "SOPHOS_PORT": "4444",
         "SOPHOS_USERNAME": "admin",
         "SOPHOS_PASSWORD": "your_secure_password_here",

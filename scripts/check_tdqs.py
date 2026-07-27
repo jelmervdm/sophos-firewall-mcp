@@ -1,4 +1,7 @@
-"""TDQS (Tool Definition Quality Score) Evaluator for Sophos Firewall MCP Server."""
+"""TDQS (Tool Definition Quality Score) Evaluator for Sophos Firewall MCP Server.
+
+Specification & Standard: https://github.com/glama-ai/tool-definition-quality-score
+"""
 
 from typing import Any, Dict
 from sophos_firewall_mcp.server import mcp
