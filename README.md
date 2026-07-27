@@ -52,7 +52,7 @@ TDQS Quality Tier              : Tier A+
 
 | Variable | Description | Default |
 | :--- | :--- | :--- |
-| `SOPHOS_HOST` | Sophos Firewall IP address or FQDN | `192.168.1.1` |
+| `SOPHOS_HOST` | Sophos Firewall IP address or FQDN | `172.16.16.16` |
 | `SOPHOS_PORT` | Web Console API port | `4444` |
 | `SOPHOS_USERNAME` | API Administrator Username | `admin` |
 | `SOPHOS_PASSWORD` | API Administrator Password | *(Required)* |
@@ -119,7 +119,7 @@ Podman is fully supported as a rootless drop-in replacement for Docker on Fedora
         "sophos-firewall-mcp-server"
       ],
       "env": {
-        "SOPHOS_HOST": "192.168.1.1",
+        "SOPHOS_HOST": "172.16.16.16",
         "SOPHOS_PORT": "4444",
         "SOPHOS_USERNAME": "admin",
         "SOPHOS_PASSWORD": "your_secure_password_here",
@@ -138,7 +138,7 @@ Podman is fully supported as a rootless drop-in replacement for Docker on Fedora
       "command": "python",
       "args": ["-m", "sophos_firewall_mcp.server"],
       "env": {
-        "SOPHOS_HOST": "192.168.1.1",
+        "SOPHOS_HOST": "172.16.16.16",
         "SOPHOS_PORT": "4444",
         "SOPHOS_USERNAME": "admin",
         "SOPHOS_PASSWORD": "your_secure_password_here",
@@ -161,7 +161,7 @@ Podman is fully supported as a rootless drop-in replacement for Docker on Fedora
         "sophos-firewall-mcp-server"
       ],
       "env": {
-        "SOPHOS_HOST": "192.168.1.1",
+        "SOPHOS_HOST": "172.16.16.16",
         "SOPHOS_PORT": "4444",
         "SOPHOS_USERNAME": "admin",
         "SOPHOS_PASSWORD": "your_secure_password_here",
