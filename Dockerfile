@@ -2,19 +2,18 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
+# Install curl for container healthchecks
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy dependency specifications
-COPY pyproject.toml requirements.txt ./
-RUN pip install --no-cache-dir -e .
+# Copy project files & source code
+COPY pyproject.toml requirements.txt README.md ./
+COPY src/ ./src
 
-# Copy application source
-COPY src/ ./src/
-COPY entrypoint.sh ./
+# Install package dependencies
+RUN pip install --no-cache-dir .
 
-RUN chmod +x entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
