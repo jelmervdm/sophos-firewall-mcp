@@ -4,4 +4,4 @@ respx>=0.20.0
 mypy>=1.0.0
 flake8>=7.0.0
 black>=23.0.0
-types-xmltodict>=0.13.0
+types-xmltodict>=1.0.1.20260518
