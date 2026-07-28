@@ -32,13 +32,13 @@ An asynchronous [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
 This server is audited against the **[Tool Definition Quality Score (TDQS)](https://github.com/glama-ai/tool-definition-quality-score)** framework to guarantee optimal function calling, type safety, and runtime safety for LLMs.
 
 ```text
-================ TDQS EVALUATION REPORT ================
-Total Registered Tools        : 28
-Tools with Behavioral Anno     : 28 / 28 (100.0%)
-Tools with 100% Param Descs    : 28 / 28 (100.0%)
-Tools with Usage Guidelines    : 28 / 28 (100.0%)
-Average Quality Score (TDQS)   : 5.00 / 5.00
-TDQS Quality Tier              : Tier A+
+---------------- SCORECARD METRICS ----------------
+Tools Evaluated              : 39
+Behavioral Annotations      : 39 / 39 (100.0%)
+100% Parameter Descriptions : 39 / 39 (100.0%)
+Usage Guidelines (Docstrings): 39 / 39 (100.0%)
+Overall TDQS Score           : 5.00 / 5.00
+TDQS Quality Tier            : Tier A+
 ========================================================
 ```
 
