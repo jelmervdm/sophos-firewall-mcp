@@ -1,6 +1,6 @@
 """IPsec site-to-site and SSL VPN management tools."""
 
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 from sophos_firewall_mcp.client import SophosFirewallClient
 
 

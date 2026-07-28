@@ -31,6 +31,9 @@ def test_server_tool_registration():
     assert "sophos_delete_user" in tools
     assert "sophos_list_ipsec_vpns" in tools
 
+    raw_tool = tm._tools["sophos_raw_api_request"]
+    assert raw_tool.annotations.destructiveHint is True
+
 
 @pytest.mark.asyncio
 async def test_route_tools_disabled():

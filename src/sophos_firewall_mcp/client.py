@@ -61,7 +61,7 @@ class SophosFirewallClient:
         self.api_version = api_version or os.environ.get("SOPHOS_API_VERSION", "2200.1")
 
         if verify_ssl is None:
-            v_env = os.environ.get("SOPHOS_VERIFY_SSL", "false").lower()
+            v_env = os.environ.get("SOPHOS_VERIFY_SSL", "true").lower()
             self.verify_ssl = v_env in ("1", "true", "yes")
         else:
             self.verify_ssl = verify_ssl
@@ -158,8 +158,6 @@ class SophosFirewallClient:
                 and "no record" not in msg.lower()
             ):
                 raise SophosResponseError(code=code, message=msg)
-
-        return cast(Dict[str, Any], resp_data)
 
         return cast(Dict[str, Any], resp_data)
 

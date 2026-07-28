@@ -1,6 +1,6 @@
 """System information and status tools for Sophos Firewall."""
 
-from typing import Any, Dict, List, Union, cast
+from typing import Any, Dict, List, Optional, Union, cast
 from sophos_firewall_mcp.client import SophosFirewallClient, SophosResponseError
 
 

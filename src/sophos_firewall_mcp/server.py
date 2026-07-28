@@ -37,7 +37,7 @@ prompts.register(mcp)
 # -----------------------------------------------------------------------------
 
 # Low-Level Generic API Tool
-mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False))(
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=False))(
     raw_api.sophos_raw_api_request
 )
 
@@ -131,12 +131,24 @@ mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(users_auth.sophos_list_
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(vpn.sophos_list_ipsec_vpns)
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(vpn.sophos_list_sslvpn_policies)
 
-# Initialize Tool Router
-router = get_router()
+# Lazy Tool Router Initialization
+_router: Optional[Any] = None
+_router_initialized: bool = False
 
-if router is not None:
-    all_registered_tools = asyncio.run(mcp.list_tools())
-    router.index([(t.name, t.description or "") for t in all_registered_tools])
+
+async def get_initialized_router() -> Optional[Any]:
+    """Lazy initialize and index the semantic tool router if enabled."""
+    global _router, _router_initialized
+    if _router_initialized:
+        return _router
+
+    r = get_router()
+    if r is not None:
+        all_registered_tools = await mcp.list_tools()
+        r.index([(t.name, t.description or "") for t in all_registered_tools])
+        _router = r
+    _router_initialized = True
+    return _router
 
 
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
@@ -153,6 +165,7 @@ async def route_tools(
     Returns:
         List of matching tool schema definitions or status string.
     """
+    router = await get_initialized_router()
     if router is None:
         return "Tool routing is not enabled."
     tool_names = router.search(query, top_k=top_k)
@@ -175,6 +188,7 @@ async def call_routed_tool(
     Returns:
         Result of the executed tool function.
     """
+    router = await get_initialized_router()
     if router is None:
         return "Tool routing is not enabled."
     return await mcp.call_tool(tool_name, arguments or {})

@@ -38,6 +38,7 @@ def test_client_fallback_defaults():
     assert client.host == "172.16.16.16"
     assert client.port == 4444
     assert client.api_version == "2200.1"
+    assert client.verify_ssl is True
 
 
 def test_client_custom_api_version(monkeypatch):
