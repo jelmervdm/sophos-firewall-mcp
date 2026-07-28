@@ -1,6 +1,7 @@
 """Unit tests for system tools."""
 
 import pytest
+from sophos_firewall_mcp.client import SophosResponseError
 from sophos_firewall_mcp.tools.system import (
     sophos_get_interface_list,
     sophos_get_service_status,
@@ -19,6 +20,14 @@ async def test_sophos_get_system_info(mock_client):
     res = await sophos_get_system_info(client=mock_client)
     assert res["Model"] == "XGS2100"
     mock_client.send_request.assert_called_once_with("Get", "SystemInformation", None)
+
+
+@pytest.mark.asyncio
+async def test_sophos_get_system_info_unsupported_module(mock_client):
+    mock_client.send_request.side_effect = SophosResponseError(code="529", message="Input request module is Invalid")
+    res = await sophos_get_system_info(client=mock_client)
+    assert res["Status"] == "Unsupported XML Module"
+    assert "SystemInformation" in res["Message"]
 
 
 @pytest.mark.asyncio

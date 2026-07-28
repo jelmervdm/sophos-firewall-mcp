@@ -3,6 +3,7 @@
 import json
 from mcp.server.fastmcp import FastMCP
 from sophos_firewall_mcp.client import SophosFirewallClient
+from sophos_firewall_mcp.tools.system import sophos_get_system_info
 
 
 def register(mcp: FastMCP) -> None:
@@ -12,7 +13,7 @@ def register(mcp: FastMCP) -> None:
     async def get_system_info_resource() -> str:
         """Resource providing system details, appliance model, serial number, and firmware version."""
         async with SophosFirewallClient() as client:
-            info = await client.get_tag("SystemInformation")
+            info = await sophos_get_system_info(client=client)
         return json.dumps(info, indent=2)
 
     @mcp.resource("sophos://interfaces")

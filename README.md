@@ -72,6 +72,7 @@ Before connecting `sophos-firewall-mcp` to your Sophos Firewall (SFOS) appliance
 | `SOPHOS_PORT` | Web Console API port | `4444` |
 | `SOPHOS_USERNAME` | API Administrator Username | `admin` |
 | `SOPHOS_PASSWORD` | API Administrator Password | *(Required)* |
+| `SOPHOS_API_VERSION` | Sophos XML API Version (e.g., `2200.1` for SFOS v22) | `2200.1` |
 | `SOPHOS_VERIFY_SSL` | Verify SSL/TLS certificates (set `false` for self-signed certs) | `false` |
 | `SOPHOS_TIMEOUT` | API request timeout in seconds | `30.0` |
 | `USE_ROUTER` | Set `true` to enable FastEmbed semantic tool routing | `false` |
@@ -99,6 +100,7 @@ Podman is fully supported as a rootless drop-in replacement for Docker on Fedora
         "-e", "SOPHOS_PORT",
         "-e", "SOPHOS_USERNAME",
         "-e", "SOPHOS_PASSWORD",
+        "-e", "SOPHOS_API_VERSION",
         "-e", "SOPHOS_VERIFY_SSL",
         "-e", "USE_ROUTER",
         "ghcr.io/jelmervdm/sophos-firewall-mcp:latest"
@@ -108,6 +110,7 @@ Podman is fully supported as a rootless drop-in replacement for Docker on Fedora
         "SOPHOS_PORT": "4444",
         "SOPHOS_USERNAME": "admin",
         "SOPHOS_PASSWORD": "your_secure_password_here",
+        "SOPHOS_API_VERSION": "2200.1",
         "SOPHOS_VERIFY_SSL": "false",
         "USE_ROUTER": "false"
       }

@@ -20,6 +20,7 @@ def test_client_init_defaults(monkeypatch):
     monkeypatch.setenv("SOPHOS_PORT", "8443")
     monkeypatch.setenv("SOPHOS_USERNAME", "sysadmin")
     monkeypatch.setenv("SOPHOS_PASSWORD", "pass123")
+    monkeypatch.setenv("SOPHOS_API_VERSION", "2200.1")
     monkeypatch.setenv("SOPHOS_VERIFY_SSL", "true")
 
     client = SophosFirewallClient()
@@ -27,6 +28,7 @@ def test_client_init_defaults(monkeypatch):
     assert client.port == 8443
     assert client.username == "sysadmin"
     assert client.password == "pass123"
+    assert client.api_version == "2200.1"
     assert client.verify_ssl is True
     assert client.endpoint_url == "https://10.0.0.1:8443/webconsole/APIController"
 
@@ -35,11 +37,19 @@ def test_client_fallback_defaults():
     client = SophosFirewallClient()
     assert client.host == "172.16.16.16"
     assert client.port == 4444
+    assert client.api_version == "2200.1"
+
+
+def test_client_custom_api_version(monkeypatch):
+    monkeypatch.delenv("SOPHOS_API_VERSION", raising=False)
+    client_custom = SophosFirewallClient(api_version="1900.1")
+    assert client_custom.api_version == "1900.1"
 
 
 def test_build_xml_request():
-    client = SophosFirewallClient(username="testuser", password="testpass")
+    client = SophosFirewallClient(username="testuser", password="testpass", api_version="2200.1")
     xml_str = client.build_xml_request("Get", "SystemInformation")
+    assert 'APIVersion="2200.1"' in xml_str
     assert "<Username>testuser</Username>" in xml_str
     assert "<Password>testpass</Password>" in xml_str
     assert "<Get>" in xml_str

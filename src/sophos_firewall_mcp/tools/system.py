@@ -1,7 +1,7 @@
 """System information and status tools for Sophos Firewall."""
 
 from typing import Any, Dict, List, Union, cast
-from sophos_firewall_mcp.client import SophosFirewallClient
+from sophos_firewall_mcp.client import SophosFirewallClient, SophosResponseError
 
 
 async def sophos_get_system_info(
@@ -25,6 +25,17 @@ async def sophos_get_system_info(
     try:
         res = await client.get_tag("SystemInformation")
         return cast(Union[Dict[str, Any], List[Dict[str, Any]]], res)
+    except SophosResponseError as err:
+        if getattr(err, "code", None) == "529" or "invalid" in str(err).lower():
+            return {
+                "Status": "Unsupported XML Module",
+                "Message": (
+                    "Sophos SFOS XML API does not support querying 'SystemInformation' directly. "
+                    "Use object-specific API tools (such as sophos_get_interface_list or sophos_get_service_status)."
+                ),
+                "Error": str(err),
+            }
+        raise
     finally:
         if close_client:
             await client.close()

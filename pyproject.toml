@@ -1,6 +1,6 @@
 [project]
 name = "sophos-firewall-mcp-server"
-version = "0.1.1"
+version = "0.1.2"
 description = "MCP server for Sophos Firewall (SFOS) network security & infrastructure management"
 readme = "README.md"
 license = {text = "Apache-2.0"}

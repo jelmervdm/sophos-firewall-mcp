@@ -39,6 +39,7 @@ class SophosFirewallClient:
         port: Optional[int] = None,
         username: Optional[str] = None,
         password: Optional[str] = None,
+        api_version: Optional[str] = None,
         verify_ssl: Optional[bool] = None,
         timeout: float = 30.0,
     ) -> None:
@@ -49,6 +50,7 @@ class SophosFirewallClient:
             port: API Web Console port. Defaults to SOPHOS_PORT env var or 4444.
             username: Admin username. Defaults to SOPHOS_USERNAME env var or admin.
             password: Admin password. Defaults to SOPHOS_PASSWORD env var.
+            api_version: Sophos API Version. Defaults to SOPHOS_API_VERSION env var or 2200.1.
             verify_ssl: Validate SSL certs. Defaults to SOPHOS_VERIFY_SSL env var or False.
             timeout: Request timeout in seconds. Default is 30.0.
         """
@@ -56,6 +58,7 @@ class SophosFirewallClient:
         self.port = port or int(os.environ.get("SOPHOS_PORT", "4444"))
         self.username = username or os.environ.get("SOPHOS_USERNAME", "admin")
         self.password = password or os.environ.get("SOPHOS_PASSWORD", "")
+        self.api_version = api_version or os.environ.get("SOPHOS_API_VERSION", "2200.1")
 
         if verify_ssl is None:
             v_env = os.environ.get("SOPHOS_VERIFY_SSL", "false").lower()
@@ -95,7 +98,7 @@ class SophosFirewallClient:
         """
         req: Dict[str, Any] = {
             "Request": {
-                "@APIVersion": "1900.1",
+                "@APIVersion": self.api_version,
                 "Login": {
                     "Username": self.username,
                     "Password": self.password,
