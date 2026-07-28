@@ -9,20 +9,32 @@ def test_server_tool_registration():
     tools = list(tm._tools.keys())
 
     # Assert key tools are registered
+    assert "sophos_raw_api_request" in tools
     assert "sophos_get_system_info" in tools
     assert "sophos_get_interface_list" in tools
     assert "sophos_list_firewall_rules" in tools
     assert "sophos_create_firewall_rule" in tools
+    assert "sophos_update_firewall_rule" in tools
     assert "sophos_list_ip_hosts" in tools
     assert "sophos_create_ip_host" in tools
+    assert "sophos_delete_ip_host_group" in tools
+    assert "sophos_delete_fqdn_host" in tools
     assert "sophos_list_services" in tools
+    assert "sophos_delete_service" in tools
+    assert "sophos_create_service_group" in tools
+    assert "sophos_delete_service_group" in tools
     assert "sophos_list_nat_rules" in tools
+    assert "sophos_create_nat_rule" in tools
+    assert "sophos_update_nat_rule" in tools
+    assert "sophos_delete_nat_rule" in tools
     assert "sophos_list_users" in tools
+    assert "sophos_delete_user" in tools
     assert "sophos_list_ipsec_vpns" in tools
 
 
-def test_route_tools_disabled():
-    res = route_tools("show system status")
+@pytest.mark.asyncio
+async def test_route_tools_disabled():
+    res = await route_tools("show system status")
     assert "Tool routing is not enabled" in res
 
 

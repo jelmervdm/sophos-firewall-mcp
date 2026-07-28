@@ -11,6 +11,7 @@ from sophos_firewall_mcp.tools import (
     firewall_rules,
     hosts_objects,
     nat_rules,
+    raw_api,
     services_objects,
     system,
     users_auth,
@@ -35,6 +36,11 @@ prompts.register(mcp)
 # Register Domain Tools with ToolAnnotations
 # -----------------------------------------------------------------------------
 
+# Low-Level Generic API Tool
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False))(
+    raw_api.sophos_raw_api_request
+)
+
 # System & Status Tools
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(system.sophos_get_system_info)
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(system.sophos_get_service_status)
@@ -45,6 +51,9 @@ mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(firewall_rules.sophos_l
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(firewall_rules.sophos_get_firewall_rule)
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False))(
     firewall_rules.sophos_create_firewall_rule
+)
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True))(
+    firewall_rules.sophos_update_firewall_rule
 )
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True))(
     firewall_rules.sophos_update_firewall_rule_status
@@ -66,9 +75,15 @@ mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(hosts_objects.sophos_li
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False))(
     hosts_objects.sophos_create_ip_host_group
 )
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True))(
+    hosts_objects.sophos_delete_ip_host_group
+)
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(hosts_objects.sophos_list_fqdn_hosts)
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False))(
     hosts_objects.sophos_create_fqdn_host
+)
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True))(
+    hosts_objects.sophos_delete_fqdn_host
 )
 
 # Service & Protocol Tools
@@ -77,17 +92,38 @@ mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(services_objects.sophos
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False))(
     services_objects.sophos_create_service
 )
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True))(
+    services_objects.sophos_delete_service
+)
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(services_objects.sophos_list_service_groups)
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False))(
+    services_objects.sophos_create_service_group
+)
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True))(
+    services_objects.sophos_delete_service_group
+)
 
 # NAT Rules Tools
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(nat_rules.sophos_list_nat_rules)
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(nat_rules.sophos_get_nat_rule)
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False))(
+    nat_rules.sophos_create_nat_rule
+)
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True))(
+    nat_rules.sophos_update_nat_rule
+)
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True))(
+    nat_rules.sophos_delete_nat_rule
+)
 
 # User Accounts & Auth Tools
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(users_auth.sophos_list_users)
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(users_auth.sophos_get_user)
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False))(
     users_auth.sophos_create_user
+)
+mcp.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHint=True))(
+    users_auth.sophos_delete_user
 )
 mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))(users_auth.sophos_list_live_users)
 
@@ -104,7 +140,7 @@ if router is not None:
 
 
 @mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
-def route_tools(
+async def route_tools(
     query: str,
     top_k: int = 5,
 ) -> Union[List[Tool], str]:
@@ -120,7 +156,7 @@ def route_tools(
     if router is None:
         return "Tool routing is not enabled."
     tool_names = router.search(query, top_k=top_k)
-    all_tools = asyncio.run(mcp.list_tools())
+    all_tools = await mcp.list_tools()
     name_map = {t.name: t for t in all_tools}
     return [name_map[n] for n in tool_names if n in name_map]
 

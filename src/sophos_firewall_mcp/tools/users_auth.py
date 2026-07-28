@@ -144,3 +144,34 @@ async def sophos_list_live_users(
     finally:
         if close_client:
             await client.close()
+
+
+async def sophos_delete_user(
+    username: Annotated[
+        str,
+        Field(description="Username of the user account to remove."),
+    ],
+    client: Any = None,
+) -> Dict[str, Any]:
+    """Delete a local user account by username.
+
+    Use when removing obsolete or revoked user accounts from Sophos Firewall.
+
+    Args:
+        username: Username of the account to delete.
+        client: Optional SophosFirewallClient instance.
+
+    Returns:
+        API response status dictionary.
+    """
+    close_client = False
+    if client is None:
+        client = SophosFirewallClient()
+        close_client = True
+
+    try:
+        res = await client.remove_tag("User", username)
+        return cast(Dict[str, Any], res)
+    finally:
+        if close_client:
+            await client.close()

@@ -5,7 +5,9 @@ from sophos_firewall_mcp.tools.hosts_objects import (
     sophos_create_fqdn_host,
     sophos_create_ip_host,
     sophos_create_ip_host_group,
+    sophos_delete_fqdn_host,
     sophos_delete_ip_host,
+    sophos_delete_ip_host_group,
     sophos_get_ip_host,
     sophos_list_fqdn_hosts,
     sophos_list_ip_host_groups,
@@ -56,6 +58,13 @@ async def test_sophos_create_ip_host_group(mock_client):
 
 
 @pytest.mark.asyncio
+async def test_sophos_delete_ip_host_group(mock_client):
+    mock_client.send_request.return_value = {"Status": {"#text": "Applied"}}
+    res = await sophos_delete_ip_host_group(name="Group1", client=mock_client)
+    assert "Status" in res
+
+
+@pytest.mark.asyncio
 async def test_sophos_list_fqdn_hosts(mock_client):
     mock_client.send_request.return_value = {"FQDNHost": {"Name": "FQDN1"}}
     res = await sophos_list_fqdn_hosts(client=mock_client)
@@ -66,4 +75,11 @@ async def test_sophos_list_fqdn_hosts(mock_client):
 async def test_sophos_create_fqdn_host(mock_client):
     mock_client.send_request.return_value = {"Status": {"#text": "Applied"}}
     res = await sophos_create_fqdn_host(name="FQDN1", fqdn="test.example.com", client=mock_client)
+    assert "Status" in res
+
+
+@pytest.mark.asyncio
+async def test_sophos_delete_fqdn_host(mock_client):
+    mock_client.send_request.return_value = {"Status": {"#text": "Applied"}}
+    res = await sophos_delete_fqdn_host(name="FQDN1", client=mock_client)
     assert "Status" in res

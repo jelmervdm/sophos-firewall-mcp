@@ -299,3 +299,65 @@ async def sophos_create_fqdn_host(
     finally:
         if close_client:
             await client.close()
+
+
+async def sophos_delete_ip_host_group(
+    name: Annotated[
+        str,
+        Field(description="Name of the IP host group to remove."),
+    ],
+    client: Any = None,
+) -> Dict[str, Any]:
+    """Delete an IP host group by name.
+
+    Use when deleting an obsolete host group object from Sophos Firewall.
+
+    Args:
+        name: Name of the host group to remove.
+        client: Optional SophosFirewallClient instance.
+
+    Returns:
+        API response status dictionary.
+    """
+    close_client = False
+    if client is None:
+        client = SophosFirewallClient()
+        close_client = True
+
+    try:
+        res = await client.remove_tag("IPHostGroup", name)
+        return cast(Dict[str, Any], res)
+    finally:
+        if close_client:
+            await client.close()
+
+
+async def sophos_delete_fqdn_host(
+    name: Annotated[
+        str,
+        Field(description="Name of the FQDN host object to remove."),
+    ],
+    client: Any = None,
+) -> Dict[str, Any]:
+    """Delete an FQDN host object by name.
+
+    Use when deleting domain-based host objects from Sophos Firewall.
+
+    Args:
+        name: Name of the FQDN host object to remove.
+        client: Optional SophosFirewallClient instance.
+
+    Returns:
+        API response status dictionary.
+    """
+    close_client = False
+    if client is None:
+        client = SophosFirewallClient()
+        close_client = True
+
+    try:
+        res = await client.remove_tag("FQDNHost", name)
+        return cast(Dict[str, Any], res)
+    finally:
+        if close_client:
+            await client.close()

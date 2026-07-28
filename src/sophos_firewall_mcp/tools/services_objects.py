@@ -148,3 +148,106 @@ async def sophos_list_service_groups(
     finally:
         if close_client:
             await client.close()
+
+
+async def sophos_delete_service(
+    name: Annotated[
+        str,
+        Field(description="Name of the custom service object to remove."),
+    ],
+    client: Any = None,
+) -> Dict[str, Any]:
+    """Delete a custom service definition object by name.
+
+    Use when deleting obsolete service port definitions from Sophos Firewall.
+
+    Args:
+        name: Name of the service object to delete.
+        client: Optional SophosFirewallClient instance.
+
+    Returns:
+        API response status dictionary.
+    """
+    close_client = False
+    if client is None:
+        client = SophosFirewallClient()
+        close_client = True
+
+    try:
+        res = await client.remove_tag("Services", name)
+        return cast(Dict[str, Any], res)
+    finally:
+        if close_client:
+            await client.close()
+
+
+async def sophos_create_service_group(
+    name: Annotated[
+        str,
+        Field(description="Unique name for the service group."),
+    ],
+    service_list: Annotated[
+        List[str],
+        Field(description="List of service object names to group together (e.g. ['HTTP', 'HTTPS'])."),
+    ],
+    client: Any = None,
+) -> Dict[str, Any]:
+    """Create a new service group object.
+
+    Use when bundling multiple service port definitions into a single named group for security rules.
+
+    Args:
+        name: Unique name for the service group.
+        service_list: List of service object names to include in the group.
+        client: Optional SophosFirewallClient instance.
+
+    Returns:
+        API response status dictionary.
+    """
+    close_client = False
+    if client is None:
+        client = SophosFirewallClient()
+        close_client = True
+
+    payload = {
+        "Name": name,
+        "ServiceList": {"Service": service_list},
+    }
+
+    try:
+        res = await client.set_tag("ServiceGroup", payload)
+        return cast(Dict[str, Any], res)
+    finally:
+        if close_client:
+            await client.close()
+
+
+async def sophos_delete_service_group(
+    name: Annotated[
+        str,
+        Field(description="Name of the service group to remove."),
+    ],
+    client: Any = None,
+) -> Dict[str, Any]:
+    """Delete a service group object by name.
+
+    Use when removing an obsolete service group definition from Sophos Firewall.
+
+    Args:
+        name: Name of the service group to remove.
+        client: Optional SophosFirewallClient instance.
+
+    Returns:
+        API response status dictionary.
+    """
+    close_client = False
+    if client is None:
+        client = SophosFirewallClient()
+        close_client = True
+
+    try:
+        res = await client.remove_tag("ServiceGroup", name)
+        return cast(Dict[str, Any], res)
+    finally:
+        if close_client:
+            await client.close()
