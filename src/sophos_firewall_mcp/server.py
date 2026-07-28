@@ -1,6 +1,5 @@
 """Main FastMCP server entrypoint for Sophos Firewall MCP."""
 
-import asyncio
 from typing import Any, List, Optional, Union
 from mcp.server.fastmcp import FastMCP
 from mcp.types import Tool, ToolAnnotations
