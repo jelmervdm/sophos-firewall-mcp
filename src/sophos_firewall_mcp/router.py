@@ -7,12 +7,19 @@ from typing import Any, List, Optional, Tuple
 logger = logging.getLogger(__name__)
 
 
+def _silence_hf_loggers() -> None:
+    """Suppress verbose HTTP and HuggingFace Hub logging during model load."""
+    for log_name in ("httpx", "httpcore", "huggingface_hub", "urllib3"):
+        logging.getLogger(log_name).setLevel(logging.WARNING)
+
+
 class ToolRouter:
     """Routes user queries to relevant Sophos Firewall tools via embedding similarity."""
 
     def __init__(self, model_name: str = "BAAI/bge-small-en-v1.5") -> None:
         from fastembed import TextEmbedding
 
+        _silence_hf_loggers()
         logger.info("Loading embedding model %s ...", model_name)
         cache_dir = os.environ.get("FASTEMBED_CACHE_DIR")
         self._model = TextEmbedding(model_name, cache_dir=cache_dir)
@@ -74,11 +81,10 @@ def get_router() -> Optional[ToolRouter]:
     try:
         _router = ToolRouter()
         return _router
-    except (ImportError, ModuleNotFoundError) as exc:
+    except Exception as exc:
         logger.warning(
-            "Tool routing is enabled (USE_ROUTER=true), but required optional dependencies "
-            "are missing (%s). Install with `pip install sophos-firewall-mcp-server[router]` "
-            "or `pip install fastembed numpy`. Disabling tool router.",
+            "Tool routing is enabled (USE_ROUTER=true), but router initialization failed (%s). "
+            "Falling back to standard tool mode.",
             exc,
         )
         return None

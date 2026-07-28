@@ -13,6 +13,9 @@ COPY src/ ./src
 # Install package dependencies
 RUN pip install --no-cache-dir ".[router]"
 
+# Pre-download default FastEmbed embedding model into container image cache
+RUN python -c "from fastembed import TextEmbedding; TextEmbedding('BAAI/bge-small-en-v1.5')"
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
