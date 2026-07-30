@@ -96,6 +96,7 @@ Podman is fully supported as a rootless drop-in replacement for Docker on Fedora
         "run",
         "-i",
         "--rm",
+        "--pull=newer",
         "-e", "SOPHOS_HOST",
         "-e", "SOPHOS_PORT",
         "-e", "SOPHOS_USERNAME",
